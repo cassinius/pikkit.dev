@@ -1,4 +1,5 @@
 import { defineConfig } from 'drizzle-kit';
+import { DB_PATH } from './config';
 
 export default defineConfig({
 	dialect: 'postgresql',
@@ -6,6 +7,6 @@ export default defineConfig({
 	schema: './db/schema/index.ts',
 	out: './db/migrations',
 	dbCredentials: {
-		url: process.env.PIKKIT_DB_PATH ?? './data/pikkit-db'
+		url: DB_PATH
 	}
 });

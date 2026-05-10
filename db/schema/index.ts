@@ -72,7 +72,6 @@ export const atoms = pgTable("atoms", {
     .array()
     .notNull()
     .default(sql`ARRAY[]::text[]`),
-  embedding: vector("embedding", { dimensions: 768 }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -93,7 +92,6 @@ export const traces = pgTable("traces", {
   explanation: jsonb("explanation").$type<TraceExplanation>(),
   sqlQueries: jsonb("sql_queries").$type<TraceSqlQuery[]>(),
   durationMs: integer("duration_ms"),
-  embedding: vector("embedding", { dimensions: 768 }),
 });
 
 export const repos = pgTable("repos", {
@@ -108,9 +106,40 @@ export const repos = pgTable("repos", {
     .defaultNow(),
 });
 
+export const atomEmbeddings = pgTable("atom_embeddings", {
+  atomId: text("atom_id")
+    .primaryKey()
+    .references(() => atoms.id, { onDelete: "cascade" }),
+  model: text("model").notNull(),
+  embeddingText: text("embedding_text").notNull(),
+  embedding: vector("embedding", { dimensions: 768 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const traceEmbeddings = pgTable("trace_embeddings", {
+  traceId: integer("trace_id")
+    .primaryKey()
+    .references(() => traces.id, { onDelete: "cascade" }),
+  model: text("model").notNull(),
+  embeddingText: text("embedding_text").notNull(),
+  embedding: vector("embedding", { dimensions: 768 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 export type Atom = typeof atoms.$inferSelect;
 export type NewAtom = typeof atoms.$inferInsert;
+export type AtomEmbedding = typeof atomEmbeddings.$inferSelect;
+export type NewAtomEmbedding = typeof atomEmbeddings.$inferInsert;
 export type Trace = typeof traces.$inferSelect;
 export type NewTrace = typeof traces.$inferInsert;
+export type TraceEmbedding = typeof traceEmbeddings.$inferSelect;
+export type NewTraceEmbedding = typeof traceEmbeddings.$inferInsert;
 export type Repo = typeof repos.$inferSelect;
 export type NewRepo = typeof repos.$inferInsert;
