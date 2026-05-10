@@ -7,6 +7,12 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
+		"db:boot": "bun db/scripts/bootstrap.ts",
+		"db:clear": "bun db/scripts/clear.ts",
+		"db:gen": "drizzle-kit generate --config db/drizzle.config.ts",
+		"db:mig": "bun run db:boot && bun db/scripts/migrate.ts",
+		"db:push": "bun run db:boot && drizzle-kit push --config db/drizzle.config.ts",
+		"db:studio": "bun run db:boot && drizzle-kit studio --config db/drizzle.config.ts",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
